@@ -3,4 +3,5 @@ resolver = "2"
 
 members = [
     "libs/shared/cqrs",
+    "libs/shared/domain-events",
 ]
