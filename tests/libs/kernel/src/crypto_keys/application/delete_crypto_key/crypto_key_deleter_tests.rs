@@ -58,9 +58,8 @@ async fn it_returns_not_found_when_crypto_key_does_not_exist() {
 #[tokio::test]
 async fn it_does_not_publish_event_when_delete_fails() {
     let crypto_key = CryptoKeyMother::random();
-    let repo = Arc::new(CryptoKeyRepositoryMock::that_returns_crypto_key_but_delete_fails(
-        crypto_key,
-    ));
+    let repo =
+        Arc::new(CryptoKeyRepositoryMock::that_returns_crypto_key_but_delete_fails(crypto_key));
     let bus = Arc::new(EventBusMock::new());
     let deleter = make_deleter(repo.clone(), bus.clone());
 

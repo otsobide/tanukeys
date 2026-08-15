@@ -42,7 +42,9 @@ async fn it_returns_an_empty_list_when_the_user_has_no_keys() {
 
 #[tokio::test]
 async fn it_returns_unexpected_when_storage_fails() {
-    let repo = Arc::new(CryptoKeyRepositoryMock::that_fails_on_find_by_user_id("boom"));
+    let repo = Arc::new(CryptoKeyRepositoryMock::that_fails_on_find_by_user_id(
+        "boom",
+    ));
     let finder = make_finder(repo);
 
     let result = finder.execute(UserIdMother::random()).await;

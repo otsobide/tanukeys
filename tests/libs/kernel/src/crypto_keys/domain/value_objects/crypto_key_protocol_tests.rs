@@ -28,7 +28,10 @@ fn it_matches_case_insensitively() {
         CryptoKeyProtocol::new("OpenPGP").unwrap(),
         CryptoKeyProtocol::OpenPgp
     );
-    assert_eq!(CryptoKeyProtocol::new("SSH").unwrap(), CryptoKeyProtocol::Ssh);
+    assert_eq!(
+        CryptoKeyProtocol::new("SSH").unwrap(),
+        CryptoKeyProtocol::Ssh
+    );
 }
 
 #[test]

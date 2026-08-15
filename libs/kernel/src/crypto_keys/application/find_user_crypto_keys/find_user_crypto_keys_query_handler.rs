@@ -37,7 +37,12 @@ impl QueryHandler<FindUserCryptoKeysQuery> for FindUserCryptoKeysQueryHandler {
     ) -> Result<Self::Response, QueryBusError> {
         match self.finder.execute(query.user_id).await {
             Ok(crypto_keys) => Ok(FindUserCryptoKeysResponse {
-                crypto_keys: Some(crypto_keys.iter().map(CryptoKeyEntry::from_domain).collect()),
+                crypto_keys: Some(
+                    crypto_keys
+                        .iter()
+                        .map(CryptoKeyEntry::from_domain)
+                        .collect(),
+                ),
                 error: None,
             }),
             Err(e) => {

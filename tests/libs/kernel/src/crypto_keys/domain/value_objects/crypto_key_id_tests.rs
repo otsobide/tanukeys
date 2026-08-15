@@ -39,5 +39,8 @@ fn it_rejects_a_malformed_uuid() {
 #[test]
 fn two_ids_from_the_same_value_are_equal() {
     let raw = "6f772c15-e0ea-4e0d-a01c-9c8f8c86d6ee";
-    assert_eq!(CryptoKeyId::new(raw).unwrap(), CryptoKeyId::new(raw).unwrap());
+    assert_eq!(
+        CryptoKeyId::new(raw).unwrap(),
+        CryptoKeyId::new(raw).unwrap()
+    );
 }
