@@ -24,7 +24,10 @@ pub struct UserCreator {
 
 impl UserCreator {
     pub fn new(repository: Arc<dyn UserRepository>, event_bus: Arc<dyn EventBus>) -> Self {
-        Self { repository, event_bus }
+        Self {
+            repository,
+            event_bus,
+        }
     }
 
     pub async fn execute(

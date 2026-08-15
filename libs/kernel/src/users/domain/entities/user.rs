@@ -21,7 +21,11 @@ pub struct User {
 impl User {
     /// Creates a new `User`.
     pub fn new(id: UserId, name: UserName, description: UserDescription) -> Self {
-        Self { id, name, description }
+        Self {
+            id,
+            name,
+            description,
+        }
     }
 
     /// Returns the platform-wide identifier of this user.
