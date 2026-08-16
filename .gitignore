@@ -16,3 +16,6 @@ target/
 
 # Local environment files
 .env
+
+# Claude Code
+CLAUDE.md
