@@ -14,10 +14,11 @@ The project is a Cargo workspace organized following Domain-Driven Design with H
 tanukeys/
 ├── libs/
 │   ├── kernel/                  # Core bounded context (temporarily hosts every module)
-│   │   └── src/users/           # User identity module
-│   │       ├── domain/          # User aggregate, value objects, events, repository trait
-│   │       ├── application/     # One folder per use case (create, find, update, delete)
-│   │       └── infrastructure/  # In-memory persistence
+│   │   ├── src/users/           # User identity module
+│   │   │   ├── domain/          # User aggregate, value objects, events, repository trait
+│   │   │   ├── application/     # One folder per use case (create, find, update, delete)
+│   │   │   └── infrastructure/  # In-memory persistence
+│   │   └── src/crypto_keys/     # Cryptographic key module (same layered layout)
 │   └── shared/
 │       ├── cqrs/                # CommandBus + QueryBus (TypeId-based dispatch)
 │       ├── domain-events/       # EventBus + DomainEventSubscriber
@@ -38,7 +39,16 @@ The `users` module stores basic user information:
 - **`UserName`** — the public handle: lowercase letters, digits and `-`, `_`, `.` (max 50 chars).
 - **`UserDescription`** — optional free-form text (max 600 chars).
 
-Every write publishes a domain event (`tanukeys.kernel.user.{created,updated,deleted}`) on the event bus.
+The `crypto_keys` module stores the keys owned by a user. A key references its owner by `UserId` only; the key material itself is opaque to the platform, which stores and serves it but never interprets it:
+
+- **`CryptoKeyId`** — a UUID v4, the identity of the key across the platform.
+- **`CryptoKeyName`** — a human-readable label, any Unicode content (max 100 chars, no surrounding whitespace).
+- **`CryptoKeyProtocol`** — the format ecosystem: `openpgp`, `ssh`, `x509` or `raw`.
+- **`CryptoKeyAlgorithm`** — a closed set: `rsa`, `ed25519`, `ecdsa`, `x25519`, `aes256`, `chacha20`, `hmac`. Each variant maps to a **`CryptoKeyKind`** (asymmetric or symmetric), derived rather than stored.
+- **`CryptoKeyPayload`** — the raw key material as bytes (non-empty, max 64 KiB).
+- **`CryptoKeyTimestamps`** — creation and last-update instants in a single Value Object, so the `updated_at >= created_at` invariant lives in one place.
+
+Every write publishes a domain event (`tanukeys.kernel.user.{created,updated,deleted}`, `tanukeys.kernel.crypto_key.{created,updated,deleted}`) on the event bus.
 
 ### Dependency rule
 
@@ -53,10 +63,16 @@ make build       # release build
 make format      # cargo fmt
 ```
 
+Unit tests live in a single test target named `kernel`, so a single test is run through it:
+
+```bash
+cargo test --test kernel it_saves_the_crypto_key
+```
+
 ## Roadmap
 
 - [x] `kernel/users` — basic user identity
-- [ ] `kernel/crypto_keys` — public key storage
+- [x] `kernel/crypto_keys` — public key storage
 - [ ] HTTP API (Actix-Web) over the kernel context
 - [ ] PostgreSQL persistence adapters
 - [ ] Federated key retrieval and instance subscriptions
